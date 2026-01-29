@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepliCode - Build. Learn. Replicate.</title>
+    <link rel="stylesheet" href="style/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="scroll-progress"></div>
+
+    <nav class="navbar">
+        <div class="logo">Repli<span class="highlight">Code</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#stats">Stats</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle" class="icon-btn"><i class="fas fa-sun"></i></button>
+            <button id="login-btn" class="btn btn-sm ripple-btn">Log In</button>
+            <div class="hamburger"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 id="typewriter"></h1>
+            <p class="subtitle hidden fade-up">Practice coding by building real projects. Join the community and start replicating success.</p>
+            
+            <div class="buttons hidden fade-up">
+                <a href="https://github.com/Vaseem34/Code-Reps" target="_blank" class="btn btn-blue ripple-btn">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+                <button class="btn btn-outline ripple-btn" id="learn-more-btn">
+                    Learn More <i class="fas fa-info-circle"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </section>
+
+    <section class="stats" id="stats">
+        <div class="stat-item hidden stagger">
+            <h2 class="counter" data-target="150">0</h2>
+            <p>Projects Built</p>
+        </div>
+        <div class="stat-item hidden stagger">
+            <h2 class="counter" data-target="500">0</h2>
+            <p>Active Members</p>
+        </div>
+        <div class="stat-item hidden stagger">
+            <h2 class="counter" data-target="10000">0</h2>
+            <p>Lines of Code</p>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2 class="section-title hidden fade-up">Why RepliCode?</h2>
+        <div class="features-container">
+            <div class="feature-card card-orange hidden stagger" onclick="openFeatureModal('learn')">
+                <div class="icon-box"><i class="fas fa-laptop-code"></i></div>
+                <h3>Learn by Doing</h3>
+                <p>Improve your coding skills by getting your hands dirty with real code.</p>
+            </div>
+            <div class="feature-card card-blue hidden stagger" onclick="openFeatureModal('projects')">
+                <div class="icon-box"><i class="fas fa-project-diagram"></i></div>
+                <h3>Project Examples</h3>
+                <p>Study real-world projects and understand the full architecture.</p>
+            </div>
+            <div class="feature-card card-white hidden stagger" onclick="openFeatureModal('easy')">
+                <div class="icon-box"><i class="fas fa-shoe-prints"></i></div>
+                <h3>Easy to Follow</h3>
+                <p>Simple steps to replicate complex applications from scratch.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-container hidden fade-up">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
+                    <h3>Phone</h3>
+                    <p>9014760662</p>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-circle"><i class="fas fa-envelope"></i></div>
+                    <h3>Email</h3>
+                    <a href="mailto:vaseemmohammad2104@gmail.com">vaseemmohammad2104@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 RepliCode. Built with <i class="fas fa-heart pulse"></i>.</p>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="auth-box" id="login-box">
+                <h2>Welcome Back</h2>
+                <form>
+                    <input type="email" placeholder="Email Address" required>
+                    <input type="password" placeholder="Password" required>
+                    <button class="btn btn-blue btn-block ripple-btn">Log In</button>
+                </form>
+                <p class="switch-text">New to RepliCode? <span id="switch-to-signup">Create Account</span></p>
+            </div>
+            <div class="auth-box hidden-box" id="signup-box">
+                <h2>Join RepliCode</h2>
+                <form>
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="email" placeholder="Email Address" required>
+                    <input type="password" placeholder="Create Password" required>
+                    <button class="btn btn-blue btn-block ripple-btn">Sign Up</button>
+                </form>
+                <p class="switch-text">Already have an account? <span id="switch-to-login">Log In</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="about-modal">
+        <div class="modal-content text-center">
+            <span class="close-modal">&times;</span>
+            <div class="icon-box bounce" style="color: var(--accent); margin-bottom: 10px;">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h2 style="margin-bottom: 20px;">About RepliCode</h2>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px;">
+                RepliCode is designed for one purpose: <strong>To make you a Top 1% Developer.</strong>
+            </p>
+            <ul style="text-align: left; margin-bottom: 30px; list-style: none;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-hammer" style="color: var(--primary); margin-right: 10px;"></i> <strong>Build:</strong> Real-world apps.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-book-open" style="color: var(--primary); margin-right: 10px;"></i> <strong>Learn:</strong> Modern stacks.</li>
+                <li><i class="fas fa-code" style="color: var(--primary); margin-right: 10px;"></i> <strong>Practice:</strong> Daily challenges.</li>
+            </ul>
+            <button class="btn btn-blue btn-block close-trigger ripple-btn">Start Building Now</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feature-modal">
+        <div class="modal-content text-center">
+            <span class="close-modal">&times;</span>
+            <div class="success-checkmark">
+                <div class="check-icon">
+                    <span class="icon-line line-tip"></span>
+                    <span class="icon-line line-long"></span>
+                    <div class="icon-circle"></div>
+                    <div class="icon-fix"></div>
+                </div>
+            </div>
+            <h2 id="feature-title" style="margin-top: 20px;">Feature Title</h2>
+            <p id="feature-desc" style="color: var(--text-muted); margin: 15px 0;">Description goes here.</p>
+            <div class="data-box" style="background: var(--bg-color); padding: 15px; border-radius: 10px; text-align: left;">
+                <p><strong><i class="fas fa-database"></i> Data:</strong> <span id="feature-data">Loading...</span></p>
+            </div>
+            <button class="btn btn-outline btn-block close-trigger ripple-btn" style="margin-top: 20px;">Awesome!</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
