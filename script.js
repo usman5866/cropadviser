@@ -1,119 +1,79 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 1. Typing Effect ---
-    const textToType = "Build. Learn. Replicate.";
-    const typeWriterElement = document.getElementById('typewriter');
-    let i = 0;
+// --- 1. Map Integration ---
+// Initialize map centered on India
+var map = L.map('map').setView([20.5937, 78.9629], 5);
 
-    function typeWriter() {
-        if (i < textToType.length) {
-            typeWriterElement.innerHTML += textToType.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100); 
-        }
+// Load map tiles (OpenStreetMap)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+var marker;
+
+// Handle Map Clicks
+map.on('click', function(e) {
+    var lat = e.latlng.lat.toFixed(4);
+    var lng = e.latlng.lng.toFixed(4);
+    
+    // Update input field
+    document.getElementById('location-display').value = `Lat: ${lat}, Lng: ${lng}`;
+
+    // Move marker
+    if (marker) {
+        marker.setLatLng(e.latlng);
+    } else {
+        marker = L.marker(e.latlng).addTo(map);
     }
-    setTimeout(typeWriter, 500);
+});
 
-    // --- 2. Modal Logic (Login/Signup & About) ---
-    const loginBtn = document.getElementById('login-btn');
-    const learnMoreBtn = document.getElementById('learn-more-btn'); // New Button
-    
-    const authModal = document.getElementById('auth-modal');
-    const aboutModal = document.getElementById('about-modal'); // New Modal
-    
-    const closeButtons = document.querySelectorAll('.close-modal, .close-trigger');
-    const switchSignup = document.getElementById('switch-to-signup');
-    const switchLogin = document.getElementById('switch-to-login');
-    const loginBox = document.getElementById('login-box');
-    const signupBox = document.getElementById('signup-box');
-
-    // Open Auth Modal
-    if(loginBtn) loginBtn.addEventListener('click', () => {
-        authModal.classList.add('active');
-    });
-
-    // Open Learn More / Praise Modal
-    if(learnMoreBtn) learnMoreBtn.addEventListener('click', () => {
-        aboutModal.classList.add('active');
-    });
-
-    // Close Modals
-    closeButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            authModal.classList.remove('active');
-            aboutModal.classList.remove('active');
-        });
-    });
-
-    // Switch Forms
-    if(switchSignup) switchSignup.addEventListener('click', () => {
-        loginBox.classList.add('hidden-box');
-        signupBox.classList.remove('hidden-box');
-    });
-
-    if(switchLogin) switchLogin.addEventListener('click', () => {
-        signupBox.classList.add('hidden-box');
-        loginBox.classList.remove('hidden-box');
-    });
-
-    // Close on click outside
-    window.addEventListener('click', (e) => {
-        if (e.target == authModal) authModal.classList.remove('active');
-        if (e.target == aboutModal) aboutModal.classList.remove('active');
-    });
-
-    // --- 3. Scroll Animation ---
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add('show');
-        });
-    });
-    document.querySelectorAll('.hidden').forEach((el) => observer.observe(el));
-
-    // --- 4. Counter Animation ---
-    const counters = document.querySelectorAll('.counter');
-    const speed = 200;
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                const counter = entry.target;
-                const updateCount = () => {
-                    const target = +counter.getAttribute('data-target');
-                    const count = +counter.innerText;
-                    const inc = target / speed;
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + inc);
-                        setTimeout(updateCount, 20);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCount();
-                counterObserver.unobserve(counter);
-            }
-        });
-    });
-    counters.forEach(counter => counterObserver.observe(counter));
-
-    // --- 5. Mobile Menu ---
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    if (hamburger) hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
-
-    // --- 6. Dark Mode ---
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        const themeIcon = themeToggle.querySelector('i');
-        const body = document.body;
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            if (body.classList.contains('dark-mode')) {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            } else {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-        });
+// --- 2. Crop Recommendation Logic (Database) ---
+const cropDatabase = {
+    'kharif': {
+        'clay': { name: 'Rice (Paddy)', desc: 'Requires plenty of water and clayey soil to hold moisture.' },
+        'loamy': { name: 'Sugarcane', desc: 'Thrives in humid climate with well-drained loamy soil.' },
+        'sandy': { name: 'Bajra (Pearl Millet)', desc: 'Good for areas with less rainfall and sandy soil.' },
+        'black': { name: 'Cotton', desc: 'Best grown in Black Cotton Soil which retains moisture well.' }
+    },
+    'rabi': {
+        'clay': { name: 'Chickpea', desc: 'Cool climate crop that grows well in moisture-retentive soils.' },
+        'loamy': { name: 'Wheat', desc: 'The most popular Rabi crop; requires cool winters and loamy soil.' },
+        'sandy': { name: 'Mustard', desc: 'Can tolerate drier conditions compared to wheat.' },
+        'black': { name: 'Sunflower', desc: 'Can be grown in Rabi season in moisture-retentive black soils.' }
+    },
+    'zaid': {
+        'clay': { name: 'Spinach', desc: 'Short duration leafy vegetable suitable for summer.' },
+        'loamy': { name: 'Cucumber', desc: 'Requires well-drained loamy soil and frequent watering.' },
+        'sandy': { name: 'Watermelon', desc: 'Perfect for sandy riverbeds during summer heat.' },
+        'black': { name: 'Groundnut', desc: 'Can be grown if irrigation is available.' }
     }
+};
+
+// --- 3. Frontend Logic ---
+document.getElementById('cropForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Stop page reload
+
+    const season = document.getElementById('season').value;
+    const soil = document.getElementById('soil').value;
+
+    // Logic: Look up the crop in our database object
+    const recommendation = cropDatabase[season][soil];
+
+    // Display Result
+    const resultDiv = document.getElementById('result');
+    const outputName = document.getElementById('crop-output');
+    const outputDesc = document.getElementById('crop-desc');
+
+    if (recommendation) {
+        outputName.textContent = recommendation.name;
+        outputDesc.textContent = recommendation.desc;
+    } else {
+        outputName.textContent = "General Vegetables";
+        outputDesc.textContent = "Try growing seasonal vegetables suitable for your local temperature.";
+    }
+
+    // Show the hidden result div
+    resultDiv.style.display = 'block';
+    
+    // Smooth scroll to the result
+    resultDiv.scrollIntoView({ behavior: 'smooth' });
 });

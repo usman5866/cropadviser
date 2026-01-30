@@ -3,142 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RepliCode - Build. Learn. Replicate.</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Smart Crop Advisor</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables for Green + White Theme (Slide 9) */
+        :root {
+            --primary-green: #2E7D32;
+            --light-green: #E8F5E9;
+            --text-dark: #1B5E20;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-green);
+            color: #333;
+        }
+
+        header {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--text-dark);
+            margin-top: 0;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1B5E20;
+        }
+
+        /* Map Container (Slide 5) */
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid var(--primary-green);
+        }
+
+        /* Results Section */
+        #result {
+            grid-column: 1 / -1;
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            display: none; /* Hidden by default */
+            border-left: 10px solid var(--primary-green);
+        }
+
+        .crop-name {
+            font-size: 2rem;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        /* Responsive design for mobile */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">Repli<span class="highlight">Code</span></div>
-        
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#stats">Stats</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <header>
+        <h1>🌱 Smart Crop Advisor</h1>
+        <p>AI-Powered Agriculture Insights</p>
+    </header>
 
-        <div class="nav-actions">
-            <button id="theme-toggle" class="icon-btn"><i class="fas fa-sun"></i></button>
-            
-            <button id="login-btn" class="btn btn-sm">Log In</button>
-            <div class="hamburger"><i class="fas fa-bars"></i></div>
-        </div>
-    </nav>
-
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1 id="typewriter"></h1>
-            <p class="subtitle hidden fade-up">Practice coding by building real projects. Join the community and start replicating success.</p>
-            
-            <div class="buttons hidden fade-up">
-                <a href="https://github.com/Vaseem34/Code-Reps" target="_blank" class="btn btn-blue">
-                    <i class="fab fa-github"></i> View on GitHub
-                </a>
-
-                <button class="btn btn-outline" id="hero-signup-btn">
-                    Get Started <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-        
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-    </section>
-
-    <section class="stats" id="stats">
-        <div class="stat-item hidden fade-up">
-            <h2 class="counter" data-target="150">0</h2>
-            <p>Projects Built</p>
-        </div>
-        <div class="stat-item hidden fade-up" style="transition-delay: 0.2s">
-            <h2 class="counter" data-target="500">0</h2>
-            <p>Active Members</p>
-        </div>
-        <div class="stat-item hidden fade-up" style="transition-delay: 0.4s">
-            <h2 class="counter" data-target="10000">0</h2>
-            <p>Lines of Code</p>
-        </div>
-    </section>
-
-    <section class="features" id="features">
-        <h2 class="section-title hidden fade-up">Why RepliCode?</h2>
-        <div class="features-container">
-            
-            <div class="feature-card card-orange hidden slide-left">
-                <div class="icon-box"><i class="fas fa-laptop-code"></i></div>
-                <h3>Learn by Doing</h3>
-                <p>Improve your coding skills by getting your hands dirty with real code.</p>
-            </div>
-
-            <div class="feature-card card-blue hidden fade-up">
-                <div class="icon-box"><i class="fas fa-project-diagram"></i></div>
-                <h3>Project Examples</h3>
-                <p>Study real-world projects and understand the full architecture.</p>
-            </div>
-
-            <div class="feature-card card-white hidden slide-right">
-                <div class="icon-box"><i class="fas fa-shoe-prints"></i></div>
-                <h3>Easy to Follow</h3>
-                <p>Simple steps to replicate complex applications from scratch.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="contact" id="contact">
-        <div class="contact-container hidden fade-up">
-            <h2 class="section-title">Get In Touch</h2>
-            <div class="contact-details">
-                <div class="contact-item">
-                    <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
-                    <h3>Phone</h3>
-                    <p>9014760662</p>
+    <div class="container">
+        <div class="card">
+            <h2>Find the Best Crop</h2>
+            <form id="cropForm">
+                <div class="form-group">
+                    <label>Season</label>
+                    <select id="season">
+                        <option value="kharif">Kharif (Monsoon/Summer)</option>
+                        <option value="rabi">Rabi (Winter)</option>
+                        <option value="zaid">Zaid (Summer)</option>
+                    </select>
                 </div>
-                <div class="contact-item">
-                    <div class="icon-circle"><i class="fas fa-envelope"></i></div>
-                    <h3>Email</h3>
-                    <a href="mailto:vaseemmohammad2104@gmail.com">vaseemmohammad2104@gmail.com</a>
+
+                <div class="form-group">
+                    <label>Soil Type</label>
+                    <select id="soil">
+                        <option value="clay">Clayey</option>
+                        <option value="loamy">Loamy</option>
+                        <option value="sandy">Sandy</option>
+                        <option value="black">Black Soil</option>
+                    </select>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label>Selected Location</label>
+                    <input type="text" id="location-display" value="Click on the map to select" readonly style="background: #f9f9f9;">
+                </div>
+
+                <button type="submit">Get Recommendation</button>
+            </form>
         </div>
-    </section>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 RepliCode. Built with <i class="fas fa-heart pulse"></i>.</p>
+        <div class="card">
+            <h2>Select Location</h2>
+            <p style="font-size: 0.9rem; color: #666;">Click on the map to set your farm location.</p>
+            <div id="map"></div>
         </div>
-    </footer>
 
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            
-            <div class="auth-box" id="login-box">
-                <h2>Welcome Back</h2>
-                <form>
-                    <input type="email" placeholder="Email Address" required>
-                    <input type="password" placeholder="Password" required>
-                    <button class="btn btn-blue btn-block">Log In</button>
-                </form>
-                <p class="switch-text">New to RepliCode? <span id="switch-to-signup">Create Account</span></p>
-            </div>
-
-            <div class="auth-box hidden-box" id="signup-box">
-                <h2>Join RepliCode</h2>
-                <form>
-                    <input type="text" placeholder="Full Name" required>
-                    <input type="email" placeholder="Email Address" required>
-                    <input type="password" placeholder="Create Password" required>
-                    <button class="btn btn-blue btn-block">Sign Up</button>
-                </form>
-                <p class="switch-text">Already have an account? <span id="switch-to-login">Log In</span></p>
-            </div>
+        <div id="result" class="card">
+            <h2>Recommended Crop:</h2>
+            <div class="crop-name" id="crop-output">Loading...</div>
+            <p id="crop-desc">Description will appear here.</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // --- 1. Map Integration (Slide 5 Requirements) ---
+        // Initialize map centered on India
+        var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+        // Load map tiles (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var marker;
+
+        // Handle Map Clicks
+        map.on('click', function(e) {
+            var lat = e.latlng.lat.toFixed(4);
+            var lng = e.latlng.lng.toFixed(4);
+            
+            // Update input field
+            document.getElementById('location-display').value = `Lat: ${lat}, Lng: ${lng}`;
+
+            // Move marker
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+        });
+
+        // --- 2. Crop Recommendation Logic (Slide 4 Requirements) ---
+        // Using "Simple If-else rules" / Dataset based approach
+        const cropDatabase = {
+            'kharif': {
+                'clay': { name: 'Rice (Paddy)', desc: 'Requires plenty of water and clayey soil to hold moisture.' },
+                'loamy': { name: 'Sugarcane', desc: 'Thrives in humid climate with well-drained loamy soil.' },
+                'sandy': { name: 'Bajra (Pearl Millet)', desc: 'Good for areas with less rainfall and sandy soil.' },
+                'black': { name: 'Cotton', desc: 'Black soil is often called "Black Cotton Soil" for this reason.' }
+            },
+            'rabi': {
+                'clay': { name: 'Chickpea', desc: 'Cool climate crop that grows well in moisture-retentive soils.' },
+                'loamy': { name: 'Wheat', desc: 'The most popular Rabi crop; requires cool winters and loamy soil.' },
+                'sandy': { name: 'Mustard', desc: 'Can tolerate drier conditions compared to wheat.' },
+                'black': { name: 'Sunflower', desc: 'Can be grown in Rabi season in moisture-retentive black soils.' }
+            },
+            'zaid': {
+                'clay': { name: 'Vegetables', desc: 'Short duration vegetables like spinach.' },
+                'loamy': { name: 'Fodder Crops', desc: 'Quick growing crops for animal feed.' },
+                'sandy': { name: 'Watermelon/Muskmelon', desc: 'Perfect for sandy riverbeds during summer heat.' },
+                'black': { name: 'Groundnut', desc: 'Can be grown if irrigation is available.' }
+            }
+        };
+
+        // --- 3. Frontend Logic ---
+        document.getElementById('cropForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page reload
+
+            const season = document.getElementById('season').value;
+            const soil = document.getElementById('soil').value;
+
+            // Logic: Look up the crop in our database object
+            const recommendation = cropDatabase[season][soil];
+
+            // Display Result
+            const resultDiv = document.getElementById('result');
+            const outputName = document.getElementById('crop-output');
+            const outputDesc = document.getElementById('crop-desc');
+
+            if (recommendation) {
+                outputName.textContent = recommendation.name;
+                outputDesc.textContent = recommendation.desc;
+            } else {
+                outputName.textContent = "General Vegetables";
+                outputDesc.textContent = "Try growing seasonal vegetables suitable for your local temperature.";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
