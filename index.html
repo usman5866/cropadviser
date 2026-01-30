@@ -3,257 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Crop Advisor</title>
+    <title>AgriSmart Ultimate - Intelligent Farming Ecosystem</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <style>
-        /* CSS Variables for Green + White Theme (Slide 9) */
-        :root {
-            --primary-green: #2E7D32;
-            --light-green: #E8F5E9;
-            --text-dark: #1B5E20;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-green);
-            color: #333;
-        }
-
-        header {
-            background-color: var(--primary-green);
-            color: var(--white);
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 0 1rem;
-        }
-
-        /* Card Styling */
-        .card {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            color: var(--text-dark);
-            margin-top: 0;
-        }
-
-        /* Form Styling */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        select, button {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        button {
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background-color: #1B5E20;
-        }
-
-        /* Map Container (Slide 5) */
-        #map {
-            height: 400px;
-            width: 100%;
-            border-radius: 12px;
-            border: 2px solid var(--primary-green);
-        }
-
-        /* Results Section */
-        #result {
-            grid-column: 1 / -1;
-            background-color: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            display: none; /* Hidden by default */
-            border-left: 10px solid var(--primary-green);
-        }
-
-        .crop-name {
-            font-size: 2rem;
-            color: var(--primary-green);
-            font-weight: bold;
-        }
-
-        /* Responsive design for mobile */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <h1>🌱 Smart Crop Advisor</h1>
-        <p>AI-Powered Agriculture Insights</p>
-    </header>
-
-    <div class="container">
-        <div class="card">
-            <h2>Find the Best Crop</h2>
-            <form id="cropForm">
-                <div class="form-group">
-                    <label>Season</label>
-                    <select id="season">
-                        <option value="kharif">Kharif (Monsoon/Summer)</option>
-                        <option value="rabi">Rabi (Winter)</option>
-                        <option value="zaid">Zaid (Summer)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Soil Type</label>
-                    <select id="soil">
-                        <option value="clay">Clayey</option>
-                        <option value="loamy">Loamy</option>
-                        <option value="sandy">Sandy</option>
-                        <option value="black">Black Soil</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Selected Location</label>
-                    <input type="text" id="location-display" value="Click on the map to select" readonly style="background: #f9f9f9;">
-                </div>
-
-                <button type="submit">Get Recommendation</button>
-            </form>
+    <section id="splash-screen">
+        <div class="animated-bg">
+            <div class="icon-float i1"><i class="fas fa-leaf"></i></div>
+            <div class="icon-float i2"><i class="fas fa-cloud-showers-heavy"></i></div>
+            <div class="icon-float i3"><i class="fas fa-seedling"></i></div>
+            <div class="icon-float i4"><i class="fas fa-tractor"></i></div>
         </div>
 
-        <div class="card">
-            <h2>Select Location</h2>
-            <p style="font-size: 0.9rem; color: #666;">Click on the map to set your farm location.</p>
-            <div id="map"></div>
+        <div class="splash-content">
+            <div class="logo-container">
+                <i class="fas fa-plant-wilt logo-anim"></i>
+            </div>
+            <h1 class="title-anim">AgriSmart <span>Pro</span></h1>
+            <p class="subtitle-anim">Cultivating Intelligence. Harvesting Success.</p>
+            
+            <button class="start-btn" onclick="enterDashboard()">
+                Get Started <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <div id="app-container" class="hidden">
+        
+        <nav class="glass-nav">
+            <div class="brand">
+                <i class="fas fa-leaf text-green"></i> &nbsp;AgriSmart
+            </div>
+            <div class="nav-actions">
+                <select id="lang-selector" onchange="changeLanguage()">
+                    <option value="en">English</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="hi">हिंदी</option>
+                </select>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="profile-icon">
+                    <img src="https://ui-avatars.com/api/?name=Farmer+Raju&background=2ecc71&color=fff&bold=true" alt="Profile">
+                </div>
+            </div>
+        </nav>
+
+        <div class="dashboard-grid">
+            
+            <aside class="sidebar">
+                <button class="nav-btn active" onclick="switchTab('home')">
+                    <i class="fas fa-home"></i> <span>Home</span>
+                </button>
+                <button class="nav-btn" onclick="switchTab('advisor')">
+                    <i class="fas fa-robot"></i> <span>Crop Advisor</span>
+                </button>
+                <button class="nav-btn" onclick="switchTab('market')">
+                    <i class="fas fa-store"></i> <span>Market (Buy/Sell)</span>
+                </button>
+                <button class="nav-btn" onclick="switchTab('soil')">
+                    <i class="fas fa-flask"></i> <span>Soil Lab</span>
+                </button>
+                <button class="nav-btn" onclick="switchTab('schemes')">
+                    <i class="fas fa-landmark"></i> <span>Govt Schemes</span>
+                </button>
+            </aside>
+
+            <main class="content-area">
+
+                <section id="home" class="panel active-panel">
+                    <div class="welcome-banner glass-card">
+                        <div>
+                            <h2>👋 Namaste, Farmer!</h2>
+                            <p>Here is your daily farm summary.</p>
+                        </div>
+                        <div class="weather-widget">
+                            <i class="fas fa-cloud-sun"></i>
+                            <div>
+                                <span>29°C</span>
+                                <small>Hyderabad, India</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="glass-card map-card">
+                            <h3><i class="fas fa-map-location-dot"></i> Live Farm & Market Map</h3>
+                            <div id="map"></div>
+                        </div>
+                        <div class="glass-card stats-card">
+                            <h3><i class="fas fa-bell"></i> Farm Alerts</h3>
+                            <ul class="alert-list">
+                                <li class="alert-high"><i class="fas fa-exclamation-triangle"></i> Heavy rain alert (48hrs).</li>
+                                <li class="alert-med"><i class="fas fa-info-circle"></i> Cotton prices up by ₹200/qt.</li>
+                                <li class="alert-low"><i class="fas fa-check-circle"></i> Soil health report ready.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="advisor" class="panel">
+                    <div class="glass-card">
+                        <h3>🌱 Location-Based Crop Advisor</h3>
+                        <p class="subtitle-text">Get scientifically backed suggestions based on your specific region.</p>
+                        
+                        <form id="crop-form" onsubmit="analyzeCrop(event)">
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label>Region / Location</label>
+                                    <select id="location">
+                                        <option value="south">South India (TS/AP/TN/KA)</option>
+                                        <option value="north">North India (Punjab/UP)</option>
+                                        <option value="coastal">Coastal Regions</option>
+                                        <option value="deccan">Deccan Plateau (Maharashtra)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Season</label>
+                                    <select id="season">
+                                        <option value="kharif">Kharif (Monsoon)</option>
+                                        <option value="rabi">Rabi (Winter)</option>
+                                        <option value="zaid">Zaid (Summer)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Soil Type</label>
+                                    <select id="soil">
+                                        <option value="black">Black Soil (Regur)</option>
+                                        <option value="red">Red Soil</option>
+                                        <option value="loamy">Loamy Soil</option>
+                                        <option value="clay">Clayey Soil</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="action-btn">Analyze Best Crop</button>
+                        </form>
+
+                        <div id="advisor-result" class="result-box hidden">
+                            <div class="result-header">
+                                <i class="fas fa-award text-gold"></i>
+                                <div>
+                                    <h4>Top Pick: <span id="rec-name">Loading...</span></h4>
+                                    <small>AI Confidence Score: 95%</small>
+                                </div>
+                            </div>
+                            <p id="rec-reason" class="result-text">Analysis description will appear here.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="market" class="panel">
+                    <div class="glass-card">
+                        <div class="market-header-row">
+                            <h3>📊 Marketplace</h3>
+                            <button class="btn-sell" onclick="openSellModal()">
+                                <i class="fas fa-plus"></i> Sell Your Crop
+                            </button>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <div class="bar-chart">
+                                <div class="bar" style="height: 40%" onclick="updatePrice('Week 1: ₹4000')"><span>Week 1</span></div>
+                                <div class="bar" style="height: 60%" onclick="updatePrice('Week 2: ₹4500')"><span>Week 2</span></div>
+                                <div class="bar" style="height: 50%" onclick="updatePrice('Week 3: ₹4200')"><span>Week 3</span></div>
+                                <div class="bar active" style="height: 85%" onclick="updatePrice('Today: ₹6200')"><span>Today</span></div>
+                            </div>
+                            <p id="price-display" style="text-align: center; margin-top: 15px; font-weight:bold;">
+                                Market Trend: <strong>Rising 📈</strong>
+                            </p>
+                        </div>
+
+                        <h4 class="mt-20">🛒 Buy Crops (Live Listings)</h4>
+                        <div class="market-list" id="market-listings">
+                            <div class="market-item">
+                                <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=150" alt="Rice">
+                                <div>
+                                    <h5>Sona Masoori Rice</h5>
+                                    <p class="text-green">₹ 2,100 / qt</p>
+                                    <small>Seller: Ravi Kumar</small>
+                                </div>
+                                <button class="btn-sm" onclick="buyItem('Rice')">Buy Now</button>
+                            </div>
+                            <div class="market-item">
+                                <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=150" alt="Tomato">
+                                <div>
+                                    <h5>Organic Tomato</h5>
+                                    <p class="text-green">₹ 1,200 / qt</p>
+                                    <small>Seller: Anita Devi</small>
+                                </div>
+                                <button class="btn-sm" onclick="buyItem('Tomato')">Buy Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="soil" class="panel">
+                    <div class="glass-card">
+                        <h3>🧪 Digital Soil Lab</h3>
+                        <p>Enter your soil test N-P-K values (mg/kg) to generate a detailed health card.</p>
+                        
+                        <div class="form-grid-3">
+                            <div class="input-wrapper">
+                                <label>Nitrogen (N)</label>
+                                <input type="number" id="n-val" placeholder="e.g. 280">
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Phosphorus (P)</label>
+                                <input type="number" id="p-val" placeholder="e.g. 15">
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Potassium (K)</label>
+                                <input type="number" id="k-val" placeholder="e.g. 200">
+                            </div>
+                        </div>
+                        
+                        <button onclick="checkSoil()" class="action-btn secondary">Generate Health Card</button>
+                        
+                        <div id="soil-report" class="result-box hidden">
+                            <h4>Soil Health Report</h4>
+                            
+                            <div class="health-meter-container">
+                                <div class="health-bar-fill" id="health-bar"></div>
+                            </div>
+                            <p id="soil-status-text" style="text-align:center; font-weight:bold; margin-bottom:10px;">Analyzing...</p>
+                            
+                            <ul id="soil-tips" class="tips-list"></ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="schemes" class="panel">
+                    <div class="glass-card">
+                        <h3>🏛️ Government Schemes</h3>
+                        <div class="scheme-card">
+                            <div class="scheme-icon"><i class="fas fa-hands-helping"></i></div>
+                            <div>
+                                <h4>PM-Kisan Samman Nidhi</h4>
+                                <p>Financial benefit of ₹6,000 per year.</p>
+                                <a href="#">Check Eligibility &rarr;</a>
+                            </div>
+                        </div>
+                        <div class="scheme-card">
+                            <div class="scheme-icon"><i class="fas fa-tractor"></i></div>
+                            <div>
+                                <h4>Sub-Mission on Agricultural Mechanization</h4>
+                                <p>Subsidy on purchasing tractors and equipment.</p>
+                                <a href="#">Apply Now &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
         </div>
 
-        <div id="result" class="card">
-            <h2>Recommended Crop:</h2>
-            <div class="crop-name" id="crop-output">Loading...</div>
-            <p id="crop-desc">Description will appear here.</p>
+        <div class="chatbot-wrapper">
+            <div id="chat-window" class="chat-window">
+                <div class="chat-header">
+                    <div class="bot-info">
+                        <div class="bot-avatar"><i class="fas fa-robot"></i></div>
+                        <div><h5>AgriBot AI</h5><small>● Online</small></div>
+                    </div>
+                    <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="chat-body" class="chat-body">
+                    <div class="msg bot"><p>Namaste! Ask me about buying/selling crops, soil health, or weather.</p></div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Type here..." onkeypress="handleEnter(event)">
+                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <button class="chat-trigger" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></button>
         </div>
+
+        <div id="sell-modal" class="modal hidden">
+            <div class="modal-content glass-card">
+                <h3>💰 Sell Your Crop</h3>
+                <input type="text" id="sell-name" placeholder="Crop Name (e.g., Wheat)">
+                <input type="text" id="sell-price" placeholder="Price per Quintal (e.g., ₹2000)">
+                <input type="text" id="sell-seller" placeholder="Your Name">
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeSellModal()">Cancel</button>
+                    <button class="btn-confirm" onclick="confirmSell()">List Item</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <script>
-        // --- 1. Map Integration (Slide 5 Requirements) ---
-        // Initialize map centered on India
-        var map = L.map('map').setView([20.5937, 78.9629], 5);
-
-        // Load map tiles (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-
-        var marker;
-
-        // Handle Map Clicks
-        map.on('click', function(e) {
-            var lat = e.latlng.lat.toFixed(4);
-            var lng = e.latlng.lng.toFixed(4);
-            
-            // Update input field
-            document.getElementById('location-display').value = `Lat: ${lat}, Lng: ${lng}`;
-
-            // Move marker
-            if (marker) {
-                marker.setLatLng(e.latlng);
-            } else {
-                marker = L.marker(e.latlng).addTo(map);
-            }
-        });
-
-        // --- 2. Crop Recommendation Logic (Slide 4 Requirements) ---
-        // Using "Simple If-else rules" / Dataset based approach
-        const cropDatabase = {
-            'kharif': {
-                'clay': { name: 'Rice (Paddy)', desc: 'Requires plenty of water and clayey soil to hold moisture.' },
-                'loamy': { name: 'Sugarcane', desc: 'Thrives in humid climate with well-drained loamy soil.' },
-                'sandy': { name: 'Bajra (Pearl Millet)', desc: 'Good for areas with less rainfall and sandy soil.' },
-                'black': { name: 'Cotton', desc: 'Black soil is often called "Black Cotton Soil" for this reason.' }
-            },
-            'rabi': {
-                'clay': { name: 'Chickpea', desc: 'Cool climate crop that grows well in moisture-retentive soils.' },
-                'loamy': { name: 'Wheat', desc: 'The most popular Rabi crop; requires cool winters and loamy soil.' },
-                'sandy': { name: 'Mustard', desc: 'Can tolerate drier conditions compared to wheat.' },
-                'black': { name: 'Sunflower', desc: 'Can be grown in Rabi season in moisture-retentive black soils.' }
-            },
-            'zaid': {
-                'clay': { name: 'Vegetables', desc: 'Short duration vegetables like spinach.' },
-                'loamy': { name: 'Fodder Crops', desc: 'Quick growing crops for animal feed.' },
-                'sandy': { name: 'Watermelon/Muskmelon', desc: 'Perfect for sandy riverbeds during summer heat.' },
-                'black': { name: 'Groundnut', desc: 'Can be grown if irrigation is available.' }
-            }
-        };
-
-        // --- 3. Frontend Logic ---
-        document.getElementById('cropForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop page reload
-
-            const season = document.getElementById('season').value;
-            const soil = document.getElementById('soil').value;
-
-            // Logic: Look up the crop in our database object
-            const recommendation = cropDatabase[season][soil];
-
-            // Display Result
-            const resultDiv = document.getElementById('result');
-            const outputName = document.getElementById('crop-output');
-            const outputDesc = document.getElementById('crop-desc');
-
-            if (recommendation) {
-                outputName.textContent = recommendation.name;
-                outputDesc.textContent = recommendation.desc;
-            } else {
-                outputName.textContent = "General Vegetables";
-                outputDesc.textContent = "Try growing seasonal vegetables suitable for your local temperature.";
-            }
-
-            resultDiv.style.display = 'block';
-            resultDiv.scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
