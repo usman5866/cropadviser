@@ -1,204 +1,207 @@
 // =========================================
-// 1. INITIALIZATION & NAVIGATION
+// 1. SYSTEM INIT & TILT EFFECT
 // =========================================
-let map; // Global map variable
+let map;
 
 function enterDashboard() {
-    const splash = document.getElementById('splash-screen');
-    const app = document.getElementById('app-container');
-    
-    splash.classList.add('slide-out-up');
-    
+    document.getElementById('splash-screen').classList.add('slide-up-exit');
     setTimeout(() => {
-        app.classList.remove('hidden');
-        app.classList.add('visible');
-        initMap(); // Initialize Map only after visible
-        initCharts();
+        document.getElementById('app-container').classList.remove('hidden');
+        document.getElementById('app-container').classList.add('visible');
+        initMap();
+        loadMarketDefaults();
+        initTiltEffect(); // Enable Tilt
     }, 800);
+}
+
+// 3D Tilt Effect
+function initTiltEffect() {
+    const cards = document.querySelectorAll('.tilt-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+    });
 }
 
 function switchTab(tabId) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active-panel');
-    
-    // Highlight sidebar button
-    const buttons = Array.from(document.querySelectorAll('.nav-btn'));
-    const activeButton = buttons.find(btn => btn.getAttribute('onclick').includes(tabId));
-    if(activeButton) activeButton.classList.add('active');
-
-    // Fix Map Rendering Bug
-    if(tabId === 'home' && map) {
-        setTimeout(() => map.invalidateSize(), 200);
-    }
+    const btns = Array.from(document.querySelectorAll('.nav-item'));
+    const btn = btns.find(b => b.getAttribute('onclick').includes(tabId));
+    if(btn) btn.classList.add('active');
+    if(tabId === 'home' && map) setTimeout(() => map.invalidateSize(), 200);
 }
 
 // =========================================
-// 2. SMART MAP (Leaflet)
+// 2. THEME TOGGLE (Sun/Moon)
+// =========================================
+function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    const icon = document.getElementById('theme-icon');
+    
+    if (document.body.classList.contains('light-mode')) {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        // Light Map
+        if(map) {
+            map.eachLayer(function (layer) { map.removeLayer(layer); });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        }
+    } else {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        // Dark Map
+        if(map) {
+            map.eachLayer(function (layer) { map.removeLayer(layer); });
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        }
+    }
+    // Re-add markers
+    addMarkers();
+}
+
+// =========================================
+// 3. INTELLIGENT MAP
 // =========================================
 function initMap() {
     if (map) return;
     map = L.map('map').setView([17.3850, 78.4867], 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    // Default Dark
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    addMarkers();
+}
 
-    L.circleMarker([17.3850, 78.4867], { radius: 8, color: 'white', fillColor: 'blue', fillOpacity: 1 }).addTo(map).bindPopup("<b>Your Farm</b>");
-    L.circleMarker([17.4300, 78.4000], { radius: 8, color: 'white', fillColor: 'green', fillOpacity: 1 }).addTo(map).bindPopup("<b>Bowenpally Mandi</b>");
+function addMarkers() {
+    L.circleMarker([17.3850, 78.4867], { radius: 8, color: '#00e676', fillColor: '#00e676', fillOpacity: 0.8 }).addTo(map).bindPopup("<b>Your Farm</b>");
+    L.circleMarker([17.4300, 78.4000], { radius: 8, color: '#2979ff', fillColor: '#2979ff', fillOpacity: 0.8 }).addTo(map).bindPopup("<b>City Mandi</b>");
 }
 
 // =========================================
-// 3. CROP ADVISOR (LOCATION AWARE)
+// 4. AI CROP ADVISOR
 // =========================================
-function analyzeCrop(event) {
-    event.preventDefault();
-    
-    const location = document.getElementById('location').value;
+function analyzeCrop(e) {
+    e.preventDefault();
+    const loc = document.getElementById('location').value;
     const season = document.getElementById('season').value;
     const soil = document.getElementById('soil').value;
-    
-    const resultBox = document.getElementById('advisor-result');
+    const rain = document.getElementById('rainfall').value;
+
+    const resBox = document.getElementById('advisor-result');
     const nameEl = document.getElementById('rec-name');
     const reasonEl = document.getElementById('rec-reason');
 
-    resultBox.classList.remove('hidden');
-    nameEl.textContent = "Processing...";
-    reasonEl.textContent = "AI is analyzing regional climate data...";
+    resBox.classList.remove('hidden');
+    nameEl.innerText = "Analyzing...";
+    reasonEl.innerText = "Processing Data...";
 
     setTimeout(() => {
-        let recName = "Mixed Vegetables";
-        let recReason = "Good for general conditions.";
+        let crop = "Millets";
+        let reason = "Resilient to current conditions.";
 
-        // --- REGIONAL LOGIC ---
-        if (location === 'south') {
-            if (season === 'kharif') {
-                if (soil === 'black') { recName = "Cotton (Black Gold)"; recReason = "High yield in Telangana Black soil. Market demand is peak."; }
-                else if (soil === 'red') { recName = "Groundnut / Chilli"; recReason = "Red soil allows deep root penetration for groundnut."; }
-                else { recName = "Paddy (Rice)"; recReason = "Standard crop for South India with irrigation."; }
-            } else {
-                recName = "Sunflower / Bengal Gram"; recReason = "Ideal for drier Rabi season in Deccan plateau.";
-            }
-        } 
-        else if (location === 'north') {
-            if (season === 'rabi') { recName = "Wheat"; recReason = "North Indian winters are perfect for Wheat."; }
-            else { recName = "Sugarcane / Maize"; recReason = "High water availability supports these crops."; }
-        }
-        else if (location === 'coastal') {
-            recName = "Paddy / Coconut"; recReason = "High humidity favors these crops.";
-        }
-        else { // Deccan
-             if (soil === 'black') { recName = "Cotton / Soybean"; recReason = "Regur soil retains moisture."; }
-             else { recName = "Millets (Jowar)"; recReason = "Drought resistant crop."; }
+        if (loc === 'south' && season === 'kharif') {
+            if (soil === 'black' && rain === 'low') { crop = "Cotton"; reason = "Perfect match for black soil moisture retention."; }
+            else if (soil === 'red') { crop = "Groundnut"; reason = "Red soil allows root spread."; }
+            else { crop = "Paddy"; reason = "Standard irrigated crop."; }
+        } else if (loc === 'north' && season === 'rabi') {
+            crop = "Wheat"; reason = "Cool winters optimize yield.";
         }
 
-        nameEl.textContent = recName;
-        reasonEl.innerHTML = `<strong>Why?</strong> ${recReason} <br><br><span style="color:#2ecc71">✔ Optimized for ${location.toUpperCase()} region.</span>`;
+        nameEl.innerHTML = `<span style="color:var(--neon-green)">${crop}</span>`;
+        reasonEl.innerHTML = `AI Confidence: 98% based on ${rain} rainfall.`;
     }, 1500);
 }
 
 // =========================================
-// 4. SOIL LAB (VISUAL METER)
+// 5. SOIL LAB
 // =========================================
 function checkSoil() {
-    const n = document.getElementById('n-val').value;
-    const p = document.getElementById('p-val').value;
-    const k = document.getElementById('k-val').value;
+    const n = parseInt(document.getElementById('n-val').value);
+    const p = parseInt(document.getElementById('p-val').value);
+    const k = parseInt(document.getElementById('k-val').value);
     
-    const reportBox = document.getElementById('soil-report');
-    const tipsList = document.getElementById('soil-tips');
-    const statusText = document.getElementById('soil-status-text');
-    const healthBar = document.getElementById('health-bar');
+    if(isNaN(n) || isNaN(p) || isNaN(k)) { alert("Enter N-P-K data."); return; }
 
-    if (!n || !p || !k) {
-        alert("Please enter all N-P-K values.");
-        return;
-    }
+    const res = document.getElementById('soil-report');
+    const bar = document.getElementById('health-bar');
+    const status = document.getElementById('soil-status-text');
+    const tips = document.getElementById('soil-tips');
 
-    reportBox.classList.remove('hidden');
-    tipsList.innerHTML = '';
-    healthBar.style.width = '0%';
-    statusText.innerText = "Analyzing Samples...";
+    res.classList.remove('hidden');
+    bar.style.width = "0%";
 
     setTimeout(() => {
-        let tips = "";
-        let healthScore = 0;
+        let score = 0;
+        let advice = "";
 
-        // NITROGEN (Ideal: 280-560)
-        if (n < 280) { tips += `<li>🔴 <strong>Low Nitrogen:</strong> Add Urea immediately.</li>`; healthScore += 10; }
-        else if (n > 560) { tips += `<li>🟠 <strong>High Nitrogen:</strong> Reduce fertilizer.</li>`; healthScore += 20; }
-        else { tips += `<li>🟢 <strong>Nitrogen:</strong> Optimal.</li>`; healthScore += 33; }
+        if(n >= 280 && n <= 560) { score += 33; advice += "<li>✅ Nitrogen Optimal</li>"; }
+        else { advice += "<li>⚠️ Nitrogen Imbalance: Use Urea.</li>"; }
 
-        // PHOSPHORUS (Ideal: 10-25)
-        if (p < 10) { tips += `<li>🔴 <strong>Low Phosphorus:</strong> Add DAP.</li>`; healthScore += 10; }
-        else { tips += `<li>🟢 <strong>Phosphorus:</strong> Healthy.</li>`; healthScore += 33; }
+        if(p >= 10 && p <= 25) { score += 33; advice += "<li>✅ Phosphorus Optimal</li>"; }
+        else { advice += "<li>⚠️ Phosphorus Low: Add DAP.</li>"; }
 
-        // POTASSIUM (Ideal: 110-280)
-        if (k < 110) { tips += `<li>🔴 <strong>Low Potassium:</strong> Add Potash.</li>`; healthScore += 10; }
-        else { tips += `<li>🟢 <strong>Potassium:</strong> Good.</li>`; healthScore += 34; }
+        if(k >= 110) { score += 34; advice += "<li>✅ Potassium Good</li>"; }
+        else { advice += "<li>⚠️ Potassium Low: Add Potash.</li>"; }
 
-        tipsList.innerHTML = tips;
-        healthBar.style.width = healthScore + '%';
-        statusText.innerText = `Soil Health Score: ${healthScore}/100`;
-
-        // Color coding bar
-        if(healthScore < 50) healthBar.style.background = "#ff4757"; // Red
-        else if(healthScore < 80) healthBar.style.background = "#f1c40f"; // Yellow
-        else healthBar.style.background = "#2ecc71"; // Green
-        
-        reportBox.scrollIntoView({ behavior: 'smooth' });
-    }, 1500);
-}
-
-// =========================================
-// 5. CHART & CHATBOT
-// =========================================
-function initCharts() {
-    const bars = document.querySelectorAll('.bar');
-    bars.forEach(bar => {
-        setTimeout(() => bar.style.height = bar.style.height, 500);
-    });
-}
-function updatePrice(text) {
-    document.getElementById('price-display').innerHTML = `Selected: <strong>${text}</strong>`;
-}
-
-function toggleChat() {
-    const win = document.getElementById('chat-window');
-    win.classList.toggle('active');
-    if(win.classList.contains('active')) document.getElementById('user-input').focus();
-}
-
-function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
-
-function sendMessage() {
-    const input = document.getElementById('user-input');
-    const body = document.getElementById('chat-body');
-    const txt = input.value.trim().toLowerCase();
-    if(!txt) return;
-
-    body.innerHTML += `<div class="msg user"><p>${input.value}</p></div>`;
-    input.value = "";
-    body.scrollTop = body.scrollHeight;
-
-    setTimeout(() => {
-        let reply = "I am still learning. Try asking about 'Cotton', 'Weather', or 'Prices'.";
-        if(txt.includes('hi') || txt.includes('hello')) reply = "Namaste! How can I help your farm today?";
-        else if(txt.includes('cotton')) reply = "Cotton is a cash crop. Ensure proper drainage in black soil.";
-        else if(txt.includes('price')) reply = "Current Mandi Prices: \n• Cotton: ₹6,200/qt \n• Rice: ₹2,100/qt";
-        else if(txt.includes('weather')) reply = "Forecast: Sunny (29°C). Light rain expected Sunday.";
-        
-        body.innerHTML += `<div class="msg bot"><p>${reply}</p></div>`;
-        body.scrollTop = body.scrollHeight;
+        bar.style.width = score + "%";
+        status.innerHTML = `Soil Score: <strong style="color:${score > 70 ? '#00e676' : '#ef4444'}">${score}/100</strong>`;
+        tips.innerHTML = advice;
     }, 1000);
 }
 
 // =========================================
-// 6. UTILITIES
+// 6. MARKET & CHAT
 // =========================================
-function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+function loadMarketDefaults() {
+    const list = document.getElementById('market-listings');
+    list.innerHTML = `
+        <div class="market-item">
+            <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=150">
+            <h5>Prem. Rice</h5>
+            <p style="color:var(--neon-green)">₹2100</p>
+            <button class="btn-outline" style="font-size:0.7rem; margin-top:5px">Buy</button>
+        </div>
+    `;
+}
+
+function updatePrice(p) { document.getElementById('price-display').innerHTML = `Selected: <strong>${p}/qt</strong>`; }
+
+function toggleChat() { document.getElementById('chat-window').classList.toggle('active'); }
+function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
+function sendMessage() {
+    const input = document.getElementById('user-input');
+    const box = document.getElementById('chat-body');
+    if(!input.value) return;
+    box.innerHTML += `<div class="msg user">${input.value}</div>`;
+    setTimeout(() => {
+        box.innerHTML += `<div class="msg bot">I can analyze soil or prices. Try the tabs!</div>`;
+        box.scrollTop = box.scrollHeight;
+        input.value = "";
+    }, 1000);
+}
+
+// Modals
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function confirmSell() { closeModal('sell-modal'); alert("Listed on Market!"); }
+
 function changeLanguage() {
-    const lang = document.getElementById('lang-selector').value;
-    const title = document.querySelector('.welcome-banner h2');
-    if(lang === 'te') title.innerText = "నమస్కారం, రైతు!";
-    else if(lang === 'hi') title.innerText = "नमस्ते किसान!";
-    else title.innerText = "👋 Namaste, Farmer!";
+    const t = document.getElementById('welcome-text');
+    const l = document.getElementById('lang-selector').value;
+    if(l === 'te') t.innerText = "నమస్కారం, రైతు!";
+    else if(l === 'hi') t.innerText = "नमस्ते किसान!";
+    else t.innerText = "Hello, Farmer!";
 }
