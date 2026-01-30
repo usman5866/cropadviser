@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriSmart | Crystal Edition</title>
+    <title>AgriSmart | Velocity</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
@@ -14,254 +14,208 @@
 <body>
 
     <section id="splash-screen">
-        <div class="video-overlay"></div>
-        <div class="splash-content">
-            <div class="logo-glow">
-                <i class="fas fa-seedling"></i>
-            </div>
-            <h1 class="mega-title">Agri<span>Smart</span></h1>
-            <p class="tagline">Future Farming. Redefined.</p>
-            <button class="btn-neon" onclick="enterDashboard()">
-                LAUNCH SYSTEM <i class="fas fa-bolt"></i>
-            </button>
+        <div class="intro-container">
+            <h1 class="intro-word" id="w1">BUILD.</h1>
+            <h1 class="intro-word" id="w2">LEARN.</h1>
+            <h1 class="intro-word" id="w3">CULTIVATE.</h1>
+        </div>
+        <div class="intro-final hidden" id="w-final">
+            <i class="fas fa-leaf logo-spin"></i>
+            <h2>AGRI<span>SMART</span></h2>
+            <button class="btn-start" onclick="enterApp()">ENTER SYSTEM</button>
         </div>
     </section>
 
     <div id="app-container" class="hidden">
         
         <nav class="glass-nav">
-            <div class="brand">
-                <i class="fas fa-leaf text-neon"></i> AgriSmart
-            </div>
-            <div class="nav-right">
-                <button class="theme-btn" onclick="toggleTheme()">
-                    <i id="theme-icon" class="fas fa-sun"></i>
-                </button>
-                <select id="lang-selector" class="glass-select" onchange="changeLanguage()">
-                    <option value="en">ENG</option>
-                    <option value="te">TEL</option>
-                    <option value="hi">HIN</option>
-                </select>
-                <div class="profile-badge" onclick="openModal('login-modal')">
-                    <img src="https://ui-avatars.com/api/?name=Raju&background=00e676&color=000" alt="Profile">
-                    <span>Login</span>
-                </div>
+            <div class="brand">Agri<span class="text-primary">Smart</span></div>
+            <div class="nav-tools">
+                <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-adjust"></i></button>
+                <button class="btn-login" onclick="openModal('login-modal')">LOGIN</button>
             </div>
         </nav>
 
-        <div class="layout-grid">
+        <div class="main-layout">
             
-            <aside class="glass-sidebar">
-                <button class="nav-item active" onclick="switchTab('home')">
-                    <i class="fas fa-home"></i> <span>Dashboard</span>
-                </button>
-                <button class="nav-item" onclick="switchTab('advisor')">
-                    <i class="fas fa-robot"></i> <span>AI Advisor</span>
-                </button>
-                <button class="nav-item" onclick="switchTab('market')">
-                    <i class="fas fa-chart-line"></i> <span>Market</span>
-                </button>
-                <button class="nav-item" onclick="switchTab('soil')">
-                    <i class="fas fa-flask"></i> <span>Soil Lab</span>
-                </button>
-                <button class="nav-item" onclick="switchTab('schemes')">
-                    <i class="fas fa-landmark"></i> <span>Schemes</span>
-                </button>
+            <aside class="sidebar">
+                <div class="nav-group">
+                    <button class="nav-link active" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</button>
+                    <button class="nav-link" onclick="switchTab('advisor')"><i class="fas fa-brain"></i> Crop AI</button>
+                    <button class="nav-link" onclick="switchTab('diagnostics')"><i class="fas fa-microscope"></i> Diagnostics</button>
+                    <button class="nav-link" onclick="switchTab('market')"><i class="fas fa-chart-line"></i> Market</button>
+                </div>
+                
+                <div class="voice-widget">
+                    <div class="voice-waves" id="voice-waves">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <button class="btn-mic" onclick="toggleVoice()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <p id="voice-status">Tap to Speak</p>
+                </div>
             </aside>
 
-            <main class="content-wrapper">
-
-                <section id="home" class="panel active-panel">
-                    <div class="tilt-card hero-card">
-                        <div class="hero-text">
-                            <h2 id="welcome-text">Hello, Farmer! 🌾</h2>
-                            <p>System Status: <span class="text-neon">Online</span></p>
-                        </div>
-                        <div class="weather-box">
-                            <i class="fas fa-cloud-sun"></i>
-                            <div>
-                                <span>28°C</span>
-                                <small>Hyderabad</small>
-                            </div>
+            <main class="content-scroll">
+                
+                <section id="home" class="view-section active-view">
+                    <div class="hero-header scroll-anim">
+                        <h1>Farm Overview</h1>
+                        <div class="weather-pill">
+                            <i class="fas fa-sun"></i> 29°C <span>Hyderabad</span>
                         </div>
                     </div>
 
-                    <div class="dashboard-widgets">
-                        <div class="tilt-card widget-card map-wrapper">
-                            <h3><i class="fas fa-map-marked-alt text-neon"></i> Live Map</h3>
+                    <div class="grid-2">
+                        <div class="card map-card scroll-anim delay-1">
+                            <div class="card-head">
+                                <h3>Live Terrain</h3>
+                                <span class="status-dot"></span>
+                            </div>
                             <div id="map"></div>
                         </div>
-                        <div class="tilt-card widget-card alerts-wrapper">
-                            <h3><i class="fas fa-bell text-neon"></i> Critical Alerts</h3>
-                            <div class="alert-item high">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <div><strong>Storm Alert</strong><br>Heavy rain (24h)</div>
+                        <div class="card alerts-card scroll-anim delay-2">
+                            <h3>System Alerts</h3>
+                            <div class="alert-row critical">
+                                <i class="fas fa-bolt"></i>
+                                <div>
+                                    <strong>Storm Warning</strong>
+                                    <p>Heavy rainfall expected in 24h.</p>
+                                </div>
                             </div>
-                            <div class="alert-item med">
-                                <i class="fas fa-arrow-trend-up"></i>
-                                <div><strong>Cotton Price</strong><br>Up by ₹200 today</div>
+                            <div class="alert-row success">
+                                <i class="fas fa-arrow-up"></i>
+                                <div>
+                                    <strong>Market Trend</strong>
+                                    <p>Cotton prices up by 5%.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="advisor" class="panel">
-                    <div class="tilt-card glass-panel">
-                        <h3>🌱 Smart Crop Intelligence</h3>
-                        <p class="sub-text">AI-driven recommendations based on parameters.</p>
-                        
-                        <form id="crop-form" onsubmit="analyzeCrop(event)">
+                <section id="advisor" class="view-section">
+                    <div class="hero-header scroll-anim">
+                        <h1>Crop Intelligence</h1>
+                        <p>AI-driven planting recommendations.</p>
+                    </div>
+                    
+                    <div class="card advisor-form scroll-anim delay-1">
+                        <form onsubmit="analyzeCrop(event)">
                             <div class="input-grid">
-                                <div class="field">
+                                <div class="input-group">
                                     <label>Region</label>
-                                    <select id="location">
-                                        <option value="south">South India</option>
-                                        <option value="north">North India</option>
-                                        <option value="coastal">Coastal</option>
-                                    </select>
+                                    <select id="region"><option>South India</option><option>North India</option></select>
                                 </div>
-                                <div class="field">
+                                <div class="input-group">
                                     <label>Season</label>
-                                    <select id="season">
-                                        <option value="kharif">Kharif</option>
-                                        <option value="rabi">Rabi</option>
-                                    </select>
+                                    <select id="season"><option>Kharif</option><option>Rabi</option></select>
                                 </div>
-                                <div class="field">
+                                <div class="input-group">
                                     <label>Soil Type</label>
-                                    <select id="soil">
-                                        <option value="black">Black Soil</option>
-                                        <option value="red">Red Soil</option>
-                                        <option value="loamy">Loamy Soil</option>
-                                    </select>
-                                </div>
-                                <div class="field">
-                                    <label>Rainfall</label>
-                                    <select id="rainfall">
-                                        <option value="high">High (>1000mm)</option>
-                                        <option value="low">Low (<500mm)</option>
-                                    </select>
+                                    <select id="soil"><option>Black Soil</option><option>Red Soil</option><option>Loamy</option></select>
                                 </div>
                             </div>
-                            <button class="btn-neon full-width">Analyze Crop</button>
+                            <button class="btn-primary">Run Analysis</button>
                         </form>
-
-                        <div id="advisor-result" class="result-card hidden">
-                            <div class="res-icon"><i class="fas fa-check-circle"></i></div>
+                        
+                        <div id="advisor-result" class="ai-result hidden">
+                            <i class="fas fa-check-circle icon-success"></i>
                             <div>
-                                <h4 id="rec-name">Analyzing...</h4>
-                                <p id="rec-reason">Please wait...</p>
+                                <h4 id="rec-crop">Calculating...</h4>
+                                <p id="rec-desc">Processing environmental data...</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="market" class="panel">
-                    <div class="tilt-card glass-panel">
-                        <div class="flex-head">
-                            <h3>📊 Market Trends</h3>
-                            <button class="btn-outline" onclick="openModal('sell-modal')">+ Sell Crop</button>
-                        </div>
-                        
-                        <div class="chart-box">
-                            <div class="bar-group">
-                                <div class="bar" style="height: 40%" onclick="updatePrice('₹4000')"><span>W1</span></div>
-                                <div class="bar" style="height: 60%" onclick="updatePrice('₹4500')"><span>W2</span></div>
-                                <div class="bar" style="height: 50%" onclick="updatePrice('₹4200')"><span>W3</span></div>
-                                <div class="bar active" style="height: 85%" onclick="updatePrice('₹6200')"><span>Today</span></div>
-                            </div>
-                            <p id="price-display">Current Price: <strong>₹6200/qt</strong></p>
-                        </div>
-
-                        <h4 class="section-head">Live Listings</h4>
-                        <div class="listing-grid" id="market-listings">
-                            </div>
+                <section id="diagnostics" class="view-section">
+                    <div class="hero-header scroll-anim">
+                        <h1>AI Diagnostics</h1>
+                        <p>Disease detection & Nutrient management.</p>
                     </div>
-                </section>
 
-                <section id="soil" class="panel">
-                    <div class="tilt-card glass-panel">
-                        <h3>🧪 Soil Health Lab</h3>
-                        <div class="input-grid three-col">
-                            <div class="field"><label>Nitrogen (N)</label><input type="number" id="n-val" placeholder="mg/kg"></div>
-                            <div class="field"><label>Phosphorus (P)</label><input type="number" id="p-val" placeholder="mg/kg"></div>
-                            <div class="field"><label>Potassium (K)</label><input type="number" id="k-val" placeholder="mg/kg"></div>
+                    <div class="grid-2">
+                        <div class="card scanner-card scroll-anim delay-1">
+                            <h3><i class="fas fa-camera"></i> Disease Scanner</h3>
+                            <div class="upload-area" onclick="document.getElementById('cam-input').click()">
+                                <div class="scan-laser"></div>
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Upload Leaf Photo</p>
+                                <input type="file" id="cam-input" hidden accept="image/*" onchange="scanDisease(this)">
+                            </div>
+                            <div id="scan-res" class="hidden result-mini">
+                                <strong>Detected:</strong> <span id="dis-name">...</span>
+                            </div>
                         </div>
-                        <button class="btn-neon full-width" onclick="checkSoil()">Check Health</button>
-                        
-                        <div id="soil-report" class="result-card hidden">
-                            <h4>Health Analysis</h4>
-                            <div class="meter-track"><div id="health-bar" class="meter-fill"></div></div>
-                            <p id="soil-status-text">Analyzing...</p>
-                            <ul id="soil-tips"></ul>
+
+                        <div class="card nutrient-card scroll-anim delay-2">
+                            <h3><i class="fas fa-leaf"></i> Nutrient Engine</h3>
+                            <div class="input-group">
+                                <label>Crop Stage</label>
+                                <select id="crop-stage">
+                                    <option value="sowing">Sowing</option>
+                                    <option value="vegetative">Vegetative</option>
+                                    <option value="flowering">Flowering</option>
+                                </select>
+                            </div>
+                            <button class="btn-secondary" onclick="calcNutrients()">Get Schedule</button>
+                            <div id="nut-res" class="hidden result-mini">
+                                <p id="nut-advice">...</p>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="schemes" class="panel">
-                    <div class="tilt-card glass-panel">
-                        <h3>🏛️ Government Support</h3>
-                        <div class="scheme-item">
-                            <div class="sch-icon"><i class="fas fa-hand-holding-dollar"></i></div>
-                            <div class="sch-info">
-                                <h4>PM-Kisan Nidhi</h4>
-                                <p>₹6000 annual support for farmers.</p>
-                            </div>
-                            <button class="btn-sm">Apply</button>
-                        </div>
-                        <div class="scheme-item">
-                            <div class="sch-icon"><i class="fas fa-tractor"></i></div>
-                            <div class="sch-info">
-                                <h4>Rythu Bandhu</h4>
-                                <p>Investment support for agriculture.</p>
-                            </div>
-                            <button class="btn-sm">View</button>
-                        </div>
+                <section id="market" class="view-section">
+                    <div class="hero-header scroll-anim">
+                        <h1>Marketplace</h1>
+                        <button class="btn-primary" onclick="openModal('sell-modal')">+ Sell Crop</button>
                     </div>
+                    
+                    <div class="card chart-card scroll-anim delay-1">
+                        <div class="bars">
+                            <div class="bar" style="height:40%"></div>
+                            <div class="bar" style="height:60%"></div>
+                            <div class="bar" style="height:50%"></div>
+                            <div class="bar active" style="height:85%"></div>
+                        </div>
+                        <p>Current Price: <strong>₹6200/qt</strong></p>
+                    </div>
+
+                    <div class="market-grid" id="market-list">
+                        </div>
                 </section>
 
             </main>
         </div>
 
-        <div class="chat-container">
-            <button class="chat-fab" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></button>
-            <div id="chat-window" class="chat-interface">
-                <div class="chat-top">
-                    <span>AgriBot AI</span>
-                    <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
-                </div>
-                <div id="chat-body" class="chat-content">
-                    <div class="msg bot">Hello! Ask me about prices, weather, or crops.</div>
-                </div>
-                <div class="chat-input">
-                    <input type="text" id="user-input" placeholder="Type here..." onkeypress="handleEnter(event)">
-                    <button onclick="sendMessage()">➤</button>
-                </div>
+        <button class="chat-toggle" onclick="toggleChat()"><i class="fas fa-comment"></i></button>
+        <div id="chat-ui" class="chat-ui">
+            <div class="chat-head">AgriBot <i class="fas fa-robot"></i></div>
+            <div class="chat-msgs" id="chat-msgs"></div>
+            <div class="chat-input">
+                <input type="text" id="chat-in" placeholder="Ask anything..." onkeypress="handleChat(event)">
             </div>
         </div>
 
-        <div id="sell-modal" class="modal-overlay hidden">
-            <div class="modal-box">
-                <h3>Sell Crop</h3>
-                <input type="text" id="sell-name" placeholder="Crop Name">
-                <input type="text" id="sell-price" placeholder="Price (₹)">
-                <input type="text" id="sell-seller" placeholder="Seller Name">
-                <div class="modal-btns">
-                    <button class="btn-outline" onclick="closeModal('sell-modal')">Cancel</button>
-                    <button class="btn-neon" onclick="confirmSell()">List It</button>
-                </div>
+        <div id="login-modal" class="modal hidden">
+            <div class="modal-card">
+                <h2>Access System</h2>
+                <input type="text" placeholder="ID">
+                <input type="password" placeholder="Password">
+                <button class="btn-primary" onclick="closeModal('login-modal')">Login</button>
             </div>
         </div>
-        
-        <div id="login-modal" class="modal-overlay hidden">
-            <div class="modal-box">
-                <h3>Login</h3>
-                <input type="text" placeholder="User ID">
-                <input type="password" placeholder="Password">
-                <div class="modal-btns">
-                    <button class="btn-outline" onclick="closeModal('login-modal')">Cancel</button>
-                    <button class="btn-neon" onclick="closeModal('login-modal'); alert('Logged In!')">Enter</button>
-                </div>
+
+        <div id="sell-modal" class="modal hidden">
+            <div class="modal-card">
+                <h2>List Crop</h2>
+                <input type="text" id="sell-name" placeholder="Crop Name">
+                <input type="text" id="sell-price" placeholder="Price">
+                <button class="btn-primary" onclick="confirmSell()">List</button>
+                <button class="btn-secondary" onclick="closeModal('sell-modal')">Cancel</button>
             </div>
         </div>
 
